@@ -56,19 +56,13 @@ int Money::getDollar()
 {
     // Money::dollar의 정수부분(달러)을 반환하는 멤버 함수
     assert(Money::dollar > 0 && "dollar value is not set or negative value");
-
-    double div;
-    modf(Money::dollar, &div);
-
-    return div;
+    return static_cast<int>(Money::dollar);
 }
 int Money::getCent()
 {
     // Money::dollar의 소수점 부분(센트)을 반환하는 멤버 함수
     assert(Money::dollar > 0 && "dollar value is not set or negative value");
-    double mod;
-    mod = Money::dollar - Money::getDollar();
-    return round(mod*100);
+    return round((Money::dollar - Money::getDollar()) * 100);
 }
 void Money::setDollar(int dollar)
 {
@@ -83,9 +77,8 @@ void Money::setCent(int cent)
     // Money::dollar값의 정수 부분은 유지한후, 소수점 부분은 입력받은 cent로 변환한후 Money::dollar에 저장하는 멤버 함수(setter)
     assert(cent > 0 && "input is negative integer");
     assert(cent < 100 && "cent input is bigger then 99");
-    double div, mod, tmp;
-    mod = modf(Money::dollar, &div);
-    Money::dollar = div + cent/100.0;
+    Money::dollar -= Money::dollar - Money::getDollar();
+    Money::dollar += cent/100.0;
 }
 double Money::getValue()
 {

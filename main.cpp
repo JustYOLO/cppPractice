@@ -1,13 +1,12 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 
-void add(int a);
+int main(void) {
+    double x;
+    double intpart;
+    double decimalPart = modf(10.111, &intpart);
+    cout << intpart << " " << decimalPart;
 
-int main() {
-    add(1);
     return 0;
-}
-
-void add(int a) {
-
 }

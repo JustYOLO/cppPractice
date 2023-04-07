@@ -79,7 +79,7 @@ int Money::getDollar()
 int Money::getCent()
 {
     // Money::dollar의 소수점 부분(센트)을 리턴하는 멤버 함수
-    assert(Money::cent >= 0 && "cent value is negative");
+    assert(Money::dollar >= 0 && "cent value is negative");
     return round((Money::dollar - Money::getDollar()) * 100);
 }
 void Money::setDollar(int dollar)
@@ -99,7 +99,6 @@ void Money::setCent(int cent)
 double Money::getValue()
 {
     // Money::dollar의 값을 반환하는 함수
-    assert(Money::dollar >= 0 && "dollar value is negative");
-    assert(Money::cent >= 0 && "cent value is negative");
+    assert(Money::dollar >= 0 && "Money::dollar is negative");
     return dollar;
 }

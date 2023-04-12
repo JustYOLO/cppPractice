@@ -24,16 +24,16 @@ class Money // Money 클래스 정의 (Money.cpp)
 
         // Money::dollar와 Money::cent를 실수인 달러 단위 값으로 리턴하는 함수 getValue 선언
         double getValue();
+
+        const Money operator +(const Money& m1) const;
+        const Money operator -(const Money& m1) const;
+        const Money operator -() const;
+        bool operator ==(const Money& m1) const;
 };
 
 // 출력을 위해 오버로딩된 2개의 output함수
 void output(int dollar, int cent);
 void output(double dollar);
-const Money operator +(const Money& m1, const Money& m2);
-const Money operator -(const Money& m1, const Money& m2);
-const Money operator -(const Money& m1);
-bool operator ==(const Money& m1, const Money& m2);
-
 
 int main(void)
 {
@@ -71,9 +71,12 @@ int main(void)
     output(m1.getDollar(), m1.getCent());
     m2 = m4 - m3;
     output(m2.getDollar(), m2.getCent());
-    bool test = m4 == m3;
+    if(m4 == m3) cout << "m4 and m3 are same.\n";
+    else cout << "m4 and m3 are not same\n";
     m2.setDollar(10);
     m2.setCent(10);
+    output(m2.getDollar(), m2.getCent());
+    m2 = m2 + 25;
     output(m2.getDollar(), m2.getCent());
     return 0;
 }
@@ -123,30 +126,30 @@ double Money::getValue()
     return Money::dollar + Money::cent/100.0;
 }
 
-const Money operator +(const Money& m1, const Money& m2)
+const Money Money::operator +(const Money& m2) const
 {
-    int m1Cents = m1.getDollar() * 100 + m1.getCent();
+    int m1Cents = Money::dollar * 100 + Money::cent;
     int m2Cents = m2.getDollar() * 100 + m2.getCent();
     int sumCents = m1Cents + m2Cents;
     int absSumCents = abs(sumCents);
     if(sumCents < 0) return Money(-1*(absSumCents/100), -1*(absSumCents%100));
     else return Money(absSumCents/100, absSumCents%100);
 }
-const Money operator -(const Money& m1, const Money& m2)
+const Money Money::operator -(const Money& m2) const
 {
-    int m1Cents = m1.getDollar() * 100 + m1.getCent();
+    int m1Cents = Money::dollar * 100 + Money::cent;
     int m2Cents = m2.getDollar() * 100 + m2.getCent();
     int sumCents = m1Cents - m2Cents;
     int absSumCents = abs(sumCents);
     if(sumCents < 0) return Money(-1*(absSumCents/100), -1*(absSumCents%100));
     else return Money(absSumCents/100, absSumCents%100);
 }
-const Money operator -(const Money& m1)
+const Money Money::operator -() const
 {
-    return Money(-m1.getDollar(), -m1.getCent());
+    return Money(-Money::dollar, -Money::cent);
 }
-bool operator ==(const Money& m1, const Money& m2)
+bool Money::operator ==(const Money& m2) const
 {
-    if(m1.getDollar() == m2.getDollar() && m1.getCent() == m2.getCent()) return true;
+    if(Money::dollar == m2.getDollar() && Money::cent == m2.getCent()) return true;
     else return false;
 }

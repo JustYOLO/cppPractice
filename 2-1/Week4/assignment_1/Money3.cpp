@@ -1,5 +1,8 @@
+#define NDEBUG
 #include <iostream>
 #include <cassert>
+#include <cstdlib>
+#include <cmath>
 using namespace std;
 
 class Money // Money 클래스 정의 (Money.cpp)
@@ -7,6 +10,10 @@ class Money // Money 클래스 정의 (Money.cpp)
     private: // 멤버 변수를 private로 선언
         int dollar, cent;
     public: // 멤버 변수에 접근하는 accessor(getter)와 mutator(setter) 멤버 함수 선언
+
+        Money(int dollar, int cent);
+        Money(int dollar);
+        Money();
         // getter 함수 선언
         int getDollar() const;
         int getCent() const;
@@ -22,14 +29,17 @@ class Money // Money 클래스 정의 (Money.cpp)
 // 출력을 위해 오버로딩된 2개의 output함수
 void output(int dollar, int cent);
 void output(double dollar);
+const Money operator +(const Money& m1, const Money& m2);
+const Money operator -(const Money& m1, const Money& m2);
+const Money operator -(const Money& m1);
+bool operator ==(const Money& m1, const Money& m2);
+
 
 int main(void)
 {
-    Money m1, m2, m3; // m1,m2는 리터럴를 입력받는 객체, m3는 사용자에게 입력받는 객체
     int dollar, cent; // 사용자에게 입력받을 값을 저장할 정수 변수
-    m1.setDollar(100);
-    m1.setCent(99); // m1 객체에 리터럴로 값을 입력
-    // void output(int dollar, int cent) 함수를 이용하는 경우에는 예상되는 출력값과 비교하기 위해 asset매크로를 이용
+    Money m1(100, 99);
+
     output(m1.getDollar(), m1.getCent()); // 달러와 센트 값을 각각 출력
     assert(m1.getDollar() == 100 && m1.getCent() == 99 && "unexpected ouput assertion"); // 출력값과 예상값을 비교
     output(m1.getValue()); // 미화 값을 실수형태로 출력
@@ -42,22 +52,39 @@ int main(void)
     output(m1.getValue()); // 변한 값을 출력
     assert(m1.getDollar() == 912 && m1.getCent() == 12 && "unexpected ouput assertion"); // 출력값과 예상값을 비교
 
-    m2.setDollar(120);
-    m2.setCent(78); // m2 객체에 리터럴로 값을 입력
+    Money m2(120, 78);
     output(m2.getDollar(), m2.getCent()); // 달러와 센트 값을 각각 출력
     assert(m2.getDollar() == 120 && m2.getCent() == 78 && "unexpected ouput assertion"); // 출력값과 예상값을 비교
     output(m2.getValue()); // 미화 값을 실수 형태로 출력
 
     cout << "input dollars and cents: ";
     cin >> dollar >> cent; // 사용자에게 입력 받은 값을 dollar와 cent에 저장
-    m3.setDollar(dollar);
-    m3.setCent(cent); // m3 객체에 값을 입력
+    Money m3(dollar, cent);
     output(m3.getDollar(), m3.getCent()); // 달러와 센트값을 각각 출력
     assert(m3.getDollar() == dollar && m3.getCent() == cent && "unexpected output assertion"); // 출력값과 예상값을 비교
     output(m3.getValue()); // 미화 값을 실수형태로 출력
-    
+
+    Money m4(100, 90);
+    output(m4.getDollar(), m4.getCent());
+
+    m1 = m3+m2;
+    output(m1.getDollar(), m1.getCent());
+    m2 = m4 - m3;
+    output(m2.getDollar(), m2.getCent());
+    bool test = m4 == m3;
+    m2.setDollar(10);
+    m2.setCent(10);
+    output(m2.getDollar(), m2.getCent());
     return 0;
 }
+
+Money::Money(int dollar, int cent): dollar(dollar), cent(cent)
+{}
+Money::Money(int dollar): dollar(dollar), cent(0)
+{}
+Money::Money(): dollar(0), cent(0)
+{}
+
 
 void output(int dollar, int cent)
 {
@@ -73,47 +100,53 @@ void output(double dollar)
 int Money::getDollar() const
 {
     // Money::dollar를 리턴하는 멤버 함수(getter)
-    assert(Money::dollar >= 0 && "dollar value is negative");
     return Money::dollar;
 }
 int Money::getCent() const
 {
     // Money::cent를 리턴하는 멤버 함수(getter)
-    assert(Money::cent >= 0 && "cent value is negative");
     return Money::cent;
 }
 void Money::setDollar(int dollar)
 {
     // Money::dollar값을 설정하는 멤버 함수(setter)
-    assert(dollar >= 0 && "dollar input is negative");
     Money::dollar = dollar;
 }
 void Money::setCent(int cent)
 {
     // Money::cent값을 설정하는 멤버 함수(setter)
-    assert(cent >= 0 && "cent input is negative");
-    assert(cent < 100 && "cent input is bigger than 99");
     Money::cent = cent;
 }
 double Money::getValue()
 {
     // Money::dollar와 Money::cent의 값을 더해서 double 자료형으로 리턴하는 함수
-    assert(Money::dollar >= 0 && "dollar value is negative");
-    assert(Money::cent >= 0 && "cent value is negative");
     return Money::dollar + Money::cent/100.0;
 }
 
 const Money operator +(const Money& m1, const Money& m2)
 {
-    Money m3;
-    int tmp;
-    tmp = m1.getCent() + m2.getCent();
-    m3.setDollar(m1.getDollar() + m2.getDollar());
-    if (tmp >= 100)
-    {
-        m3.setDollar(m3.getDollar() + 1);
-        tmp -= 100;
-    }
-    m3.setCent(tmp);
-    return m3;
+    int m1Cents = m1.getDollar() * 100 + m1.getCent();
+    int m2Cents = m2.getDollar() * 100 + m2.getCent();
+    int sumCents = m1Cents + m2Cents;
+    int absSumCents = abs(sumCents);
+    if(sumCents < 0) return Money(-1*(absSumCents/100), -1*(absSumCents%100));
+    else return Money(absSumCents/100, absSumCents%100);
+}
+const Money operator -(const Money& m1, const Money& m2)
+{
+    int m1Cents = m1.getDollar() * 100 + m1.getCent();
+    int m2Cents = m2.getDollar() * 100 + m2.getCent();
+    int sumCents = m1Cents - m2Cents;
+    int absSumCents = abs(sumCents);
+    if(sumCents < 0) return Money(-1*(absSumCents/100), -1*(absSumCents%100));
+    else return Money(absSumCents/100, absSumCents%100);
+}
+const Money operator -(const Money& m1)
+{
+    return Money(-m1.getDollar(), -m1.getCent());
+}
+bool operator ==(const Money& m1, const Money& m2)
+{
+    if(m1.getDollar() == m2.getDollar() && m1.getCent() == m2.getCent()) return true;
+    else return false;
 }

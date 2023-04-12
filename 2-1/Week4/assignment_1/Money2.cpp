@@ -1,5 +1,7 @@
 #include <iostream>
+#include <cmath>
 #include <cassert>
+
 using namespace std;
 
 class Money // Money 클래스 정의(Money2.cpp)

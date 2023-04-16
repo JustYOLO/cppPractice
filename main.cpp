@@ -1,10 +1,11 @@
 #include <iostream>
-#include <cmath>
+#include <algorithm>
 using namespace std;
 
 int main(void) {
-    char c;
-    int *p = static_cast<int*>(&c);
-    *p = 4004;
-    cout << *p;
+    int a = 100;
+    int b = 200;
+    cout << max(a, b);
+
+    return 0;
 }

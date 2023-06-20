@@ -13,9 +13,16 @@ int num(char c)
 
 int main()
 {
-    char c;
-    c = '9';
-    cout << num(c);
-
+    string s;
+    int n;
+    long long int a = 0;
+    cin >> s >> n;
+    
+    for(int i = 0; i < s.length(); i++)
+    {
+        a += num(s[s.length() - i - 1]) * pow(n, i);
+    }
+    
+    cout << a << '\n';
     return 0;
 }

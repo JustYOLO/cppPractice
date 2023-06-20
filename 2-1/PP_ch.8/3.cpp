@@ -25,6 +25,7 @@ int main()
     Complex c2(10, 10);
     Complex c3(10);
     Complex c4(0);
+    Complex c5;
     
     cin >> c2;
     if(c1 == c2) cout << "true\n";
@@ -36,6 +37,8 @@ int main()
     cout << c1 - c2;
     cout << c3;
     cout << c4;
+
+    cout << c5;
 
     return 0;
 }

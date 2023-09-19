@@ -1,5 +1,6 @@
 #include <iostream>
-using namespace std;
+using std::cout;
+using std::cin;
 
 int main() {
     long int n[5];

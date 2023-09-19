@@ -1,21 +1,17 @@
 #include <iostream>
-#include <string>
-#include <cmath>
-using std::cout;
-using std::cin;
-using std::string;
-
-int num(char c)
-{
-    if(isdigit(c)) return static_cast<int>(c) - '0';
-    else return static_cast<int>(c) - 55;
-}
+using namespace std;
 
 int main()
 {
-    char c;
-    c = '9';
-    cout << num(c);
+    int *x, *y, *z;
+    int a[10];
+    cout << x << endl;
+    cout << y << endl;
+    cout << z << endl;
+    for(int i = 0; i < 10; i++)
+    {
+        cout << a + i << endl;
+    }
 
     return 0;
 }

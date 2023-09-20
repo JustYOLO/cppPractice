@@ -2,8 +2,11 @@
 #include <string>
 using namespace std;
 
-template<typename T>
+template<class T>
 class DLinkedList;
+
+template <class T>
+void printAll(DLinkedList<T>& list);
 
 template <class T>
 class DNode
@@ -38,16 +41,37 @@ class DLinkedList
 
 int main()
 {
-    DLinkedList<string> d;
-    d.addFront("11");
-    d.addFront("22");
-
-    cout << d.front();
-    d.removeFront();
-    cout << d.front();
-    d.removeFront();
+    DLinkedList<char> cList;
+    DLinkedList<string> sList;
+    string testCase[] = {"apple", "bleach", "cat", "data", "electron", "fan", "guns", "hex", "iridium", "jacket"};
+    DLinkedList<int> iList;
+    for(int i = 0; i < 10; i++)
+    {
+        cList.addBack((char) (97 + i));
+        sList.addBack(testCase[i]);
+        iList.addBack(i);
+    }
+    cout << cList.front() << ", " << cList.back() << endl;
+    cout << sList.front() << ", " << sList.back() << endl;
+    cout << iList.front() << ", " << iList.back() << endl;
+    
+    printAll(cList);
+    printAll(sList);
+    printAll(iList);
+    
 
     return 0;
+}
+
+template <class T>
+void printAll(DLinkedList<T>& list)
+{
+    while(!list.empty())
+    {
+        cout << list.front() << ", ";
+        list.removeFront();
+    }
+    cout << endl;
 }
 
 template <class T>

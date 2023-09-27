@@ -1,11 +1,14 @@
 #include <iostream>
 #include <string>
-#include "DLinkedList.cpp" // 이중 링크드 리스트의 클래스를 담고있는 데이터
-using std::cout, std::cin, std::string, std::endl;
+#include "DLinkedList.cpp" // 이중 링크드 리스트의 클래스를 담고있는 파일
+using std::cout;
+using std::cin;
+using std::string;
+using std::endl;
 
 template <class T>
 void printAll(DLinkedList<T>& list);
-// 이중 링크드 리스트의 모든 노드를 출력하는 함수
+// 이중 링크드 리스트의 모든 노드를 출력과 함께 삭제하는 함수
 
 int main()
 {
@@ -58,7 +61,7 @@ int main()
 
 template <class T>
 void printAll(DLinkedList<T>& list)
-{ // 리스트의 모든데이터를 출력하는 함수
+{ // 리스트의 모든 노드의 데이터를 출력과 함께 삭제하는 함수
     while(!list.empty())
     { // 리스트가 비어있을때 까지
         cout << list.front() << ", "; // front 원소를 출력

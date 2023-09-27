@@ -26,8 +26,22 @@ class LinkedList
         const T& front() const;
         void addFront(const T& e);
         void removeFront();
-        int getSize() const;
+        int size() const;
 };
+
+int main()
+{
+    LinkedList<int> list;
+    cout << list.getSize() << endl;
+    list.addFront(1);
+    list.addFront(2);
+    cout << list.getSize() << endl;
+    list.removeFront();
+    cout << list.getSize() << endl;
+    list.removeFront();
+
+
+}
 
 template <class T>
 LinkedList<T>::LinkedList() : head(nullptr), size(0) {}

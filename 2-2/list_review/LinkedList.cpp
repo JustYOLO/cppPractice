@@ -1,15 +1,17 @@
 #include <iostream>
-using namespace std;
+using std::cout;
+using std::endl;
 
 template <class T>
 class LinkedList;
+// forward statement
 
 template <class T>
-class Node
+class DNode
 {
     private:
-        T elem;
-        Node<T>* next;
+        DNode<T>* next;
+        T data;
     friend class LinkedList<T>;
 };
 
@@ -17,78 +19,77 @@ template <class T>
 class LinkedList
 {
     private:
+        DNode<T>* head;
         int size;
-        Node<T>* head;
     public:
-        LinkedList<T>();
-        ~LinkedList<T>();
-        void addFront(const T& elem);
-        void removeFront();
-        int size() const;
+        LinkedList();
+        ~LinkedList();
         const T& front() const;
-        bool empty() const;
+        int getSize() const;
+        void addFront(const T& data);
+        void removeFront();
+        bool isEmpty() const;
 };
 
 int main()
 {
-    LinkedList<int> list;
-    list.addFront(2);
+    LinkedList<int> list = LinkedList<int>();
     list.addFront(1);
-    cout << list.empty();
-    cout << list.front() << endl; list.removeFront();
-    cout << list.front() << endl; list.removeFront();
-    cout << list.size();
-
-
+    list.addFront(2);
+    cout << list.front() << endl;
+    list.removeFront();
+    cout << list.front() << endl;
+    cout << list.isEmpty() << endl;
+    cout << list.getSize() << endl;
+    list.removeFront();
+    cout << list.isEmpty() << endl;
+    cout <<list.getSize() << endl;
+    
     return 0;
 }
 
-
-
 template <class T>
-LinkedList<T>::LinkedList() : size(0), head(nullptr)
+LinkedList<T>::LinkedList() : head(nullptr), size(0)
 {}
 
 template <class T>
 LinkedList<T>::~LinkedList()
 {
-    while(!empty())
+    while(!isEmpty())
         removeFront();
-}
-
-template <class T>
-void LinkedList<T>::addFront(const T& elem)
-{
-    Node<T> v = new Node<T>();
-    v->elem = elem;
-    v-> next = head->next;
-    head = v;
-    size++;
-}
-
-template <class T>
-void LinkedList<T>::removeFront()
-{
-    Node<T>* old = head;
-    head = head->next;
-    delete old;
-    size--;
-}
-
-template <class T>
-int LinkedList<T>::size() const
-{
-    return size;
 }
 
 template <class T>
 const T& LinkedList<T>::front() const
 {
-    return head->elem;
+    return head->data;
 }
 
 template <class T>
-bool LinkedList<T>::empty() const
+int LinkedList<T>::getSize() const
+{
+    return size;
+}
+
+template <class T>
+void LinkedList<T>::addFront(const T& data)
+{
+    DNode<T>* n = new DNode<T>(); // make a new node
+    n->data = data; // insert data in new node
+    n->next = head; // insert head's pointer to new node
+    head = n; // change head into new node
+}
+
+template <class T>
+void LinkedList<T>::removeFront()
+{
+    DNode<T>* n = head; // make n points to head
+    head = head->next; // change head into next node of head
+    delete n; // delete original head
+}
+
+template <class T>
+bool LinkedList<T>::isEmpty() const
 {
     return head == nullptr;
 }

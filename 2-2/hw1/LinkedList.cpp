@@ -26,7 +26,7 @@ class LinkedList
         const T& front() const;
         void addFront(const T& e);
         void removeFront();
-        int size() const;
+        int getSize() const;
 };
 
 int main()

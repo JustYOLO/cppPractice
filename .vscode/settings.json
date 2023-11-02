@@ -72,7 +72,8 @@
         "map": "cpp",
         "set": "cpp",
         "stack": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "queue": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

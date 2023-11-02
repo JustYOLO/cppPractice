@@ -7,10 +7,9 @@ using std::stack;
 using std::cout;
 using std::stringstream;
 using std::stoi;
-using std::invalid_argument; // stoi() 사용시 정수변환 불가 오류
 using std::endl;
 
-enum Opcode // string이 어떤 operator인지 확인할때 사용
+enum Opcode // string이 operator인지 operand인지 구분할때 사용하는 enum
 {
     NUM, // 숫자일 경우 해당
     ADD, // +에 해당
@@ -20,7 +19,7 @@ enum Opcode // string이 어떤 operator인지 확인할때 사용
 };
 
 int evaluate(string expr); // postfix notation으로 된 식을 계산하는 함수
-Opcode whatOperator(string s); // s가 어떤 operator인지 확인하는 함수 
+Opcode whatOperator(string s); // s가 operand인지 operator인지 확인하는 함수 
 
 int main() // 드라이버 코드
 {
@@ -37,22 +36,8 @@ int evaluate(string expr)
     string token; // 각 단어(operator 혹은 operand)를 받을 string
     while(sTokens >> token) // expr(수식)의 모든 단어를 확인
     {
-        int num; // 숫자를 담을 변수
-        Opcode code; // operator의 종류를 저장할 변수
-        try
-        {
-            num = stoi(token);
-            // 숫자일 경우 변환, operator인 경우 catch문으로 이동 
-            code = NUM; // 종류를 숫자로 지정
-        } catch (invalid_argument) 
-        { // 숫자 변환 불가능 -> operator인 경우
-            code = whatOperator(token);
-            // operator의 종류를 특정
-        }
-
-        if(code == NUM) // 숫자인 경우
-            s.push(num); // 스택에 push
-        else // 숫자가 아닌 경우 -> operator인 경우
+        Opcode code = whatOperator(token); // 함수로부터 operand 인지 operator인지 확인
+        if(code != NUM) // NUM이 아닐경우 -> operator인 경우
         {
             int b = s.top(); s.pop();
             int a = s.top(); s.pop(); // operand가 될 스택의 최상단 2개의 원소를 가져옴
@@ -79,6 +64,8 @@ int evaluate(string expr)
                 break;
             }
         }
+        else // NUM인 경우 -> 숫자인 경우
+            s.push(stoi(token)); 
     }
 
     return s.top(); // 스택의 최상단을 return

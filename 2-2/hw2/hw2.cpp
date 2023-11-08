@@ -19,9 +19,11 @@ int main() // 드라이버 코드
 {
     string pexpr1 = "5 2 + 8 3 - * 4 /";
     // infix: ((5 + 2) * (8 - 3)) / 4
-    string pexpr2  = "6 4 + 7 2 - * 5 / 2 +";
+    string pexpr2 = "6 4 + 7 2 - * 5 / 2 +";
     // infix: ((6 + 4) * (7 - 2) / 5) + 2
-    string pexpr3 = "10 23 12 - 24 * 2 / +";
+    string pexpr3 = "3 5 * 16 4 - / 10 +";
+    // infix: 3 * 5 / (16 - 4) + 10
+    string pexpr4 = "10 23 12 - 24 * 2 / +";
     // infix: 10 + (((23 – 12) * 24) / 2)
 
     int result = evaluate(pexpr1);
@@ -34,9 +36,13 @@ int main() // 드라이버 코드
 
     result = evaluate(pexpr3);
     cout << "Result: "  << result << endl;
+    resultCheck((3 * 5 / (16 - 4) + 10), result);
+
+    result = evaluate(pexpr4);
+    cout << "Result: "  << result << endl;
     resultCheck((10 + (((23 - 12) * 24) / 2)), result);
     // prefix로 된 식을 계산하고 infix로 된 식의 값과 비교
-
+    
     return 0;
 }
 
@@ -75,8 +81,8 @@ int operation(string s, int a, int b)
         return a / b; // 나눗셈인 경우 DIV 반환
     else
     {
-        cout << "operator err" << endl;
-        exit(-1); // 해당하는 operator가 없을경우 종료
+        cout << "operator " << "\"" << s <<"\"" << " is invalid or unsupported operator" << endl;
+        exit(-1); // 해당하는 operator가 없을 경우 종료
     }
 }
 

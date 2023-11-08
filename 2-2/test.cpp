@@ -1,36 +1,54 @@
 #include <iostream>
-#include <stack>
-#include <queue>
 #include <string>
+#include <sstream> // stringstream 사용
+#include <stack> // stack 자료구조 사용
+#include <stdexcept> // stoi() 변환 에러 발생
 using namespace std;
 
-bool is_palindrome(string s)
+int operation(string s, int a, int b);
+
+int evaluatePostfix(string S)
 {
-    stack<char> st;
-    queue<char> q;
-
-    int length = s.length();
-    int n = length/2;
-
-    for(int i = 0; i < n; i++)
-        st.push(s[i]);
-    for(int i = n; i < length; i++)
-        q.push(s[i]);
-    for(int i = 0; i < n; i++)
+    stringstream sTokens(S); // 식을 띄어쓰기 단위로 받는 stringstream
+    stack<int> s; // 수를 넣을 stack
+    string token; // 각 단어(operator 혹은 operand)를 받을 string
+    for(int i = 0; i < S.length(); i++)
     {
-        if(st.top() != q.front())
-            return false;
-        st.pop(); q.pop();
+        int num; // 숫자를 담을 변수
+        if(isdigit(S[i]))
+        {
+            s.push(num); // 숫자를 stack에 추가
+        }
+        else
+        { // 숫자 변환 불가능 -> operator인 경우
+            int b = s.top(); s.pop();
+            int a = s.top(); s.pop(); // operand가 될 스택의 최상단 2개의 원소를 가져옴
+            s.push(operation(token, a, b));
+        }
     }
-    return true;
+    return s.top(); // 스택의 최상단을 return
 }
 
-int main(void)
+int operation(string s, int a, int b)
+{ // 주어진 연산자를 이용해 a, b를 계산하는 함수
+if(s == "+") 
+    return a + b; // 덧셈인 경우 ADD 반환
+else if(s == "-")
+    return a - b; // 뺄셈인 경우 SUB 반환
+else if(s == "*")
+    return a * b; // 곱셈인 경우 MUL 반환
+else if(s == "/")
+    return a / b; // 나눗셈인 경우 DIV 반환
+else
 {
-    string s1;
-    cin >> s1;
-    if(is_palindrome(s1))
-        cout << "s1 is palindrome" << endl;
-    else
-        cout << "s1 is not palindrome" << endl;
+    cout << "operator err" << endl;
+    exit(-1); // 해당하는 operator가 없을경우 종료
+}
+}
+
+int main()
+{
+    cout << evaluatePostfix("231*+9-") << endl;
+
+    return 0;
 }

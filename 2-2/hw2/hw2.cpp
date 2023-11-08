@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <sstream> // stringstream 사용
-#include <stack> // postfix notation을 구현하기 위해 stack 사용
+#include <stack> // stack 자료구조 사용
+#include <stdexcept> // stoi() 변환 에러 발생(invalid_argument) 
 using std::string;
 using std::stack;
 using std::cout;
@@ -10,91 +11,79 @@ using std::stoi;
 using std::invalid_argument; // stoi() 사용시 정수변환 불가 오류
 using std::endl;
 
-enum Opcode // string이 어떤 operator인지 확인할때 사용
-{
-    NUM, // 숫자일 경우 해당
-    ADD, // +에 해당
-    SUB, // -에 해당
-    MUL, // *에 해당
-    DIV // /에 해당
-};
-
 int evaluate(string expr); // postfix notation으로 된 식을 계산하는 함수
-Opcode whatOperator(string s); // s가 어떤 operator인지 확인하는 함수 
+int operation(string s, int a, int b); // s 연산으로 a, b를 계산하는 함수
+void resultCheck(int a, int b); // infix로 계산된 a, postfix로 계산된 b값을 비교하는 함수
 
 int main() // 드라이버 코드
 {
     string pexpr1 = "5 2 + 8 3 - * 4 /";
+    // infix: ((5 + 2) * (8 - 3)) / 4
+    string pexpr2  = "6 4 + 7 2 - * 5 / 2 +";
+    // infix: ((6 + 4) * (7 - 2) / 5) + 2
+    string pexpr3 = "10 23 12 - 24 * 2 / +";
+    // infix: 10 + (((23 – 12) * 24) / 2)
+
     int result = evaluate(pexpr1);
     cout << "Result: " << result << endl;
+    resultCheck((((5 + 2) * (8 - 3)) / 4), result);
+
+    result = evaluate(pexpr2);
+    cout << "Result: "  << result << endl;
+    resultCheck((((6 + 4) * (7 - 2) / 5) + 2), result);
+
+    result = evaluate(pexpr3);
+    cout << "Result: "  << result << endl;
+    resultCheck((10 + (((23 - 12) * 24) / 2)), result);
+    // prefix로 된 식을 계산하고 infix로 된 식의 값과 비교
+
     return 0;
 }
 
 int evaluate(string expr)
 {
     stringstream sTokens(expr); // 식을 띄어쓰기 단위로 받는 stringstream
-    stack<int> s; // 수를 넣을 stack
     string token; // 각 단어(operator 혹은 operand)를 받을 string
+    stack<int> s; // 수를 넣을 stack
     while(sTokens >> token) // expr(수식)의 모든 단어를 확인
     {
         int num; // 숫자를 담을 변수
-        Opcode code; // operator의 종류를 저장할 변수
         try
         {
-            num = stoi(token);
-            // 숫자일 경우 변환, operator인 경우 catch문으로 이동 
-            code = NUM; // 종류를 숫자로 지정
+            num = stoi(token); // 숫자일 경우 변환
+            // operator인 경우 invalid_argument 오류 발생, catch문으로 이동
+            s.push(num); // 숫자를 stack에 추가
         } catch (invalid_argument) 
         { // 숫자 변환 불가능 -> operator인 경우
-            code = whatOperator(token);
-            // operator의 종류를 특정
-        }
-
-        if(code == NUM) // 숫자인 경우
-            s.push(num); // 스택에 push
-        else // 숫자가 아닌 경우 -> operator인 경우
-        {
             int b = s.top(); s.pop();
             int a = s.top(); s.pop(); // operand가 될 스택의 최상단 2개의 원소를 가져옴
-            switch (code) // 해당하는 operator에 적용
-            {
-            case ADD: // 덧셈인 경우
-                s.push(a + b);
-                break;
-            
-            case SUB: // 뺄셈인 경우
-                s.push(a - b);
-                break;
-            
-            case MUL: // 곱셈인 경우
-                s.push(a * b);
-                break;
-            
-            case DIV: // 나눗셈인 경우
-                s.push(a / b);
-                break;
-            
-            default:
-                cout << "opcode error" << endl;
-                break;
-            }
+            s.push(operation(token, a, b));
         }
     }
-
     return s.top(); // 스택의 최상단을 return
 }
 
-Opcode whatOperator(string s)
-// 숫자인지, 어떤 operator인지 구분하는 함수
-{
+int operation(string s, int a, int b)
+{ // 주어진 연산자를 이용해 a, b를 계산하는 함수
     if(s == "+") 
-        return ADD; // 덧셈인 경우 ADD 반환
+        return a + b; // 덧셈인 경우 ADD 반환
     else if(s == "-")
-        return SUB; // 뺄셈인 경우 SUB 반환
+        return a - b; // 뺄셈인 경우 SUB 반환
     else if(s == "*")
-        return MUL; // 곱셈인 경우 MUL 반환
+        return a * b; // 곱셈인 경우 MUL 반환
     else if(s == "/")
-        return DIV; // 나눗셈인 경우 DIV 반환
+        return a / b; // 나눗셈인 경우 DIV 반환
     else
-        return NUM; // 모두 아닌 경우(숫자인 경우) NUM 반환
+    {
+        cout << "operator err" << endl;
+        exit(-1); // 해당하는 operator가 없을경우 종료
+    }
+}
+
+void resultCheck(int a, int b)
+{
+    if(a == b)
+        cout << "Infix and prefix results are same" << endl;
+    else
+        cout << "Infix and prefix results are not same" << endl;
 }
